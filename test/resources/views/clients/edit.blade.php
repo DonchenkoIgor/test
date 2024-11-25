@@ -1,6 +1,12 @@
 <form action="{{route('clients.update', $client->id) }}" method="POST">
     @csrf
     @method('PUT')
+
+    <div style="margin-bottom: 15px;">
+        <label for="name">Город:</label>
+        <input type="text" name="city" value="{{ old('city', $client->city) }}">
+    </div>
+
     <div style="margin-bottom: 15px;">
         <label for="name">Имя</label>
         <input type="text" name="name" value="{{ old('name', $client->name) }}" required>
@@ -12,12 +18,12 @@
     </div>
 
     <div style="margin-bottom: 15px;">
-        <label for="phone">Email</label>
+        <label for="phone">Телефон</label>
         <input type="text" name="phone" value="{{ old('phone', $client->phone) }}" required>
     </div>
 
     <div style="margin-bottom: 15px;">
-        <label for="register_at">Email</label>
+        <label for="register_at">Дата регистрации</label>
         <input type="date" name="register_at" value="{{ old('register_at', $client->register_at) }}" required>
     </div>
 

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Services\WeatherService;
 use Illuminate\Http\Request;
+use App\Mail\WelcomeEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendWelcomeEmail;
 
 class ClientController extends Controller
 {
@@ -48,7 +52,9 @@ class ClientController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
-        Client::create($validated);
+        $client = Client::create($validated);
+
+        SendWelcomeEmail::dispatch($client);
 
         return redirect()->route('clients.index');
     }
@@ -61,6 +67,7 @@ class ClientController extends Controller
             'phone' => 'nullable|max:20|string',
             'register_at' => 'nullable|date',
             'status' => 'required|in:active,inactive',
+            'city'  => 'nullable|max:255|string',
         ]);
 
         $client->update($validated);
@@ -71,9 +78,11 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Client $client, WeatherService $weatherService)
     {
-        //
+        $weather = $client->city ? $weatherService->getWeatherByCity($client->city) : null;
+
+        return view('clients.show', compact('client', 'weather'));
     }
 
     /**
